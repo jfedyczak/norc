@@ -1,8 +1,12 @@
 {
   "name": "norc",
   "version": "1.0.0",
-  "description": "Simple cronjob library for node.js",
+  "description": "Simple cron library for node.js",
   "main": "norc.js",
   "author": "Jakub Fedyczak <jakub@fedyczak.net>",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+	"type": "git",
+	"url": "https://github.com/jfedyczak/norc.git"
+  }
 }
