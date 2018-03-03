@@ -4,7 +4,7 @@ class Norc {
 	constructor() {
 		this.cronjobs = new Map()
 		this.cronTimeout = null
-		this.changeStore(Norc.createMemStore())
+		this.changeStore(this.createMemStore())
 	}
 
 	static cronspecParse(cronspec) {
@@ -38,7 +38,7 @@ class Norc {
 		return cron.every((r, i) => r.some(r => r[0] <= range[i] && r[1] >= range[i] && range[i] % r[2] === 0))
 	}	
 
-	static createMemStore() {
+	createMemStore() {
 		let lastTs = 0
 		return (ts) => new Promise(resolve => {
 			if (ts === lastTs) {
@@ -49,7 +49,7 @@ class Norc {
 		})
 	}
 
-	static createFileStore(filename) {
+	createFileStore(filename) {
 		const createFile = () => new Promise((resolve, reject) => {
 			fs.writeFile(filename, '', (err) => {
 				if (err) return reject(err)
