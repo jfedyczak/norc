@@ -1,6 +1,6 @@
 # norc
 
-Simple cron library for node.js
+Simple cron library for node.js. With failsafes.
 
 ## Installation
 
@@ -90,6 +90,16 @@ norc.addJob('wakeUp', {
 })
 ```
 
+## Error handling
+
+Errors thrown by storage methods can be caught using `error` event:
+
+```
+norc.on('error', (e) => {
+	// your handler goes here...
+})
+```
+
 ## API reference
 
 ### addJob(name, cronspec, job)
@@ -129,3 +139,7 @@ There are two stores built in the library:
 
 - `norc.createMemStore()` (default) - stores state in memory - not safe during crashes - can cause tasks to be executed again in event of process crash
 - `norc.createFileStore(filename)` - creates a store keeping timestamp as `mtime` of the `filename` (will be created if not exists)
+
+## License
+
+MIT

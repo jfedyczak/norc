@@ -1,7 +1,9 @@
 const fs = require('fs')
+const EventEmitter = require('events')
 
-class Norc {
+class Norc extends EventEmitter {
 	constructor() {
+		super()
 		this.cronjobs = new Map()
 		this.cronTimeout = null
 		this.changeStore(this.createMemStore())
@@ -74,13 +76,13 @@ class Norc {
 			})
 		})
 		return (ts) => statFile()
-		.then(mtime => {
-			if (mtime !== ts) {
-				return updateMtime(ts)
-			} else {
-				return false
-			}
-		})
+			.then(mtime => {
+				if (mtime !== ts) {
+					return updateMtime(ts)
+				} else {
+					return false
+				}
+			})
 	}
 
 	changeStore(store) {
@@ -121,14 +123,18 @@ class Norc {
 		this.cronTimeout = setTimeout(() => this.cronGo(), 1000 * (60 - d.getSeconds()) - d.getMilliseconds() + 1)
 
 		let cr = Norc.currentRange()
-		this.storageMethod(+new Date(cr[0], cr[1] - 1, cr[2], cr[3], cr[4])).then(doJobs => {
-			if (doJobs) {
-				this.cronjobs.forEach(job => {
-					if (Norc.inRange(job.cronspec, cr))
-						job.job()
-				})
-			}
-		})
+		this.storageMethod(+new Date(cr[0], cr[1] - 1, cr[2], cr[3], cr[4]))
+			.then(doJobs => {
+				if (doJobs) {
+					this.cronjobs.forEach(job => {
+						if (Norc.inRange(job.cronspec, cr))
+							job.job()
+					})
+				}
+			})
+			.catch(e => {
+				this.emit('error', e)
+			})
 	}
 
 	cronStop() {
